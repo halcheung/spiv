@@ -22,35 +22,35 @@
       </div>
       <div class="input" style="text-align: left;padding-left:15px;">
         <mu-checkbox v-model="rememberMe" value="eat" label="记住手机号码"></mu-checkbox>
-        <a href="javascript:;" class="forget">忘记密码？</a>
+        <a href="javascript:;" class="forget" @click="icoClick('forgetpswd');">忘记密码？</a>
       </div>
       <div class="input">
-        <mu-button round full-width large color="#005cb3" class="login-btn" @click="icoClick('login');">登录</mu-button>
+        <mu-button round full-width large class="submit-btn" color="#005cb3" @click="icoClick('login');">登录</mu-button>
       </div>
     </div>
     <div class="form" v-if="active1===1">
       <div class="input">
-        <input type="text" class="ipt" placeholder="常用手机号">
+        <input type="text" class="ipt" v-model="reg.mobile" placeholder="常用手机号码">
         <mu-icon value="phone_android" color="#c5c5c5" class="icon"></mu-icon>
       </div>
       <div class="input">
-        <input :type="pswdType" class="ipt" placeholder="设置登录密码">
+        <input :type="pswdType" class="ipt" v-model="reg.password" placeholder="设置登录密码">
         <mu-icon value="lock" color="#c5c5c5" class="icon"></mu-icon>
         <mu-button icon color="#666" class="view-pswd" @click="icoClick('viewpswd');">
           <mu-icon :value="viewPswdIcon"></mu-icon>
         </mu-button>
       </div>
       <div class="input" style="text-align:left;">
-        <mu-button round color="#005cb3" class="verify-btn" @click="icoClick('login');">发送验证码</mu-button>
-        <input type="text" class="ipt" placeholder="验证码" style="width:50%;">
+        <mu-button round color="#005cb3" class="verify-btn" @click="icoClick('sendverify');">发送验证码</mu-button>
+        <input type="text" class="ipt" placeholder="验证码" v-model="reg.verifyCode" style="width:50%;">
         <mu-icon value="verified_user" color="#c5c5c5" class="icon"></mu-icon>
       </div>
       <div class="input" style="text-align: left;padding-left:15px;">
-        <mu-checkbox v-model="readMe" value="read" label="已阅读并同意"></mu-checkbox>
-        <a href="javascript:;" class="terms-of-use">隐私政策与使用条款</a>
+        <mu-checkbox v-model="reg.readMe" value="read" label="已阅读并同意"></mu-checkbox>
+        <a href="javascript:;" class="terms-of-use" @click="icoClick('termsofuse');">隐私政策与使用条款</a>
       </div>
       <div class="input">
-        <mu-button round full-width large color="#005cb3" class="login-btn" @click="icoClick('register');">立即注册</mu-button>
+        <mu-button round full-width large class="submit-btn" color="#005cb3" @click="icoClick('register');">立即注册</mu-button>
       </div>
     </div>
   </div>
@@ -63,10 +63,15 @@
       return {
         active1: 0,
         rememberMe: false,
-        readMe: false,
         viewPswdIcon: 'visibility_off',
         pswdType: 'password',
-        topHeight: 0
+        topHeight: 0,
+        reg: {
+          mobile: '',
+          password: '',
+          verifyCode: '',
+          readMe: false
+        }
       }
     },
     mounted(){
@@ -81,6 +86,11 @@
         if(localStorage.getItem('gotoreg')){
           localStorage.removeItem('gotoreg');
           this.active1 = 1;
+        }
+
+        if(localStorage.getItem('regdata')){
+          this.reg = JSON.parse(localStorage.getItem('regdata'));
+          localStorage.removeItem('regdata');
         }
       })
     },
@@ -112,6 +122,17 @@
             this.viewPswdIcon = this.viewPswdIcon === 'visibility_off' ? 'visibility' : 'visibility_off';
             this.pswdType = this.pswdType === 'password' ? 'text' : 'password';
             break;
+          case 'forgetpswd':
+            this.$router.push('/GetBackPswd');
+            break;
+          case 'termsofuse':
+            localStorage.setItem('gotoreg', '1');
+            localStorage.setItem('regdata', JSON.stringify(this.reg));
+            this.$router.push('/TermsOfUse');
+            break;
+          case 'login':
+            this.$router.push('/MainHome');
+            break;
         }
       }
     }
@@ -141,32 +162,6 @@
     background-color:#eee;
     position: relative;
   }
-  .form {
-    padding:30px;
-  }
-  .ipt {
-    border:none;
-    border-radius:100px;
-    background-color:#eee;
-    font-size:18px;
-    color:#666;
-    padding:9px 20px 7px 55px;
-    width:100%;
-  }
-  input:focus {
-    outline: none;
-    box-shadow:0 0 0 2px #005cb3 inset;
-  }
-  .input {
-    position: relative;
-    margin-bottom:10px;
-  }
-  .icon {
-    position: absolute;
-    top:50%;
-    margin:-12px 0 0 0;
-    left:15px;
-  }
   .forget, .terms-of-use {
     display: block;
     float: right;
@@ -183,18 +178,7 @@
   .forget:active, .terms-of-use:active {
     background-color:#ccc;
   }
-  .login-btn {
-    font-size:18px;
-  }
-  .verify-btn {
-    float:right;
-    width:45%;
+  .submit-btn {
     font-size:16px;
-    height:42px;
-  }
-  .view-pswd {
-    position: absolute;
-    top:-2px;
-    right:2px;
   }
 </style>

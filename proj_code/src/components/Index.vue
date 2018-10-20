@@ -18,7 +18,7 @@
           <mu-button fab large color="#fcfcfc" @click="icoClick('about');">
             <mu-icon value="sms" color="#0a6fc9"></mu-icon>
           </mu-button>
-          <span class="cap">关于我们</span>
+          <span class="cap">关于我</span>
         </mu-col>
         <mu-col span="4">
           <mu-button fab large color="#fcfcfc" style="margin-right:15px;" @click="icoClick('reg');">
@@ -33,7 +33,7 @@
     </div>
     <footer>
       <span>交易动态</span>
-      <div>
+      <div :style="'opacity:'+dynamicOpacity+';'">
         {{tradeDynamics}}
       </div>
     </footer>
@@ -45,14 +45,21 @@ export default {
   name: 'Index',
   data () {
     return {
-      tradeDynamics: '周先生购买了1500元'
+      tradeDynamics: '',
+      news: null,
+      dynamicOpacity: 0
     }
   },
   mounted(){
     this.$nextTick(()=>{
       if(this.reqQryStr('ishb')){
         localStorage.setItem('ishb','1');
-        this.checkPlusReady();
+      }
+
+      try{
+        plus.navigator.setStatusBarStyle('light');
+      }catch(Error){
+        //
       }
 
       if(localStorage.getItem('ishb')){
@@ -60,41 +67,43 @@ export default {
       } else {
         document.querySelector("meta[name='theme-color']").setAttribute("content", "#0e82c5");
       }
+
+      this.tradeNews();
     })
   },
   methods:{
     checkPlusReady(){
-      if(window.plus){
-        this.plusReady();
-      } else {
-        setTimeout(this.checkPlusReady, 50);
-      }
+      document.addEventListener('plusready', ()=>{
+        plus.navigator.setStatusBarStyle('light');
+        this.addRemoveBackButtonEvent();
+      });
     },
-    plusReady(){
-      plus.navigator.setStatusBarStyle('light');
-
-      let webview = plus.webview.currentWebview();
-      let first = null;
+    addRemoveBackButtonEvent(){
+      let firstr = 0;
       plus.key.addEventListener('backbutton', ()=>{
-        webview.canBack((e)=>{
-          if(e.canBack) {
-            webview.back();
+        if(localStorage.getItem('backbtnmm')){
+          let mm = localStorage.getItem('backbtnmm');
+          localStorage.removeItem('backbtnmm');
+          this._B.$emit(mm);
+          return;
+        }
+        if (location.hash!=='#/'
+            && location.hash.indexOf('#/MainHome')===-1) {
+          // 返回一页
+          history.go(-1);
+        } else {
+          if (firstr === 0) {
+            firstr++;
+            this.$toast.message('再按一次退出应用！');
+            setTimeout(() => {
+              firstr = 0;
+            }, 1000);
           } else {
-
-            if (!first) {
-              first = new Date().getTime();
-              this.$toast.message('再按一次退出应用！');
-              setTimeout(function() {
-                first = null;
-              }, 1000);
-            } else {
-              if (new Date().getTime() - first < 1500) {
-                plus.runtime.quit();
-              }
+            if (firstr >= 1) {
+              plus.runtime.quit();
             }
-
           }
-        })
+        }
       });
 
     },
@@ -112,6 +121,9 @@ export default {
         case 'login':
           this.$router.push('/LoginReg');
           break;
+        case 'intro':
+          this.$router.push('/Intro');
+          break;
         case 'reg':
           localStorage.setItem('gotoreg', '1');
           this.$router.push('/LoginReg');
@@ -120,6 +132,31 @@ export default {
           this.$router.push('/About');
           break;
       }
+    },
+    tradeNews(){
+      let sns = [];
+      for(let i=0;i<10;i++){
+        let sn = ('00'+parseInt(Math.random()*(9898-18+1)+18,10)).substr(-4);
+        let money = parseInt(Math.random()*(30-1+1)+1,10)*100;
+        let rnd = Math.random();
+        let mob1 = rnd<0.33?'13':(rnd>0.66?'18':'15');
+        rnd = parseInt(Math.floor(Math.random()*10),10)
+        sns.push(mob1+rnd+'****'+sn+'投资了'+money+'美元');
+      }
+      this.tradeDynamics = sns[9];
+
+      clearInterval(this.news);
+      let i=0;
+      this.news = setInterval(()=>{
+        this.tradeDynamics = sns[i];
+        this.dynamicOpacity = 1;
+        i++;
+        if(i>=10)i=0;
+        setTimeout(()=>{
+          this.dynamicOpacity = 0;
+        }, 4700)
+      }, 5000);
+
     }
   }
 }
@@ -196,11 +233,12 @@ export default {
     text-align: center;
     padding:7px 16px;
     border-radius:50px;
-    margin-right:17px;
+    margin-right:10px;
     font-size:12px;
   }
   footer>div {
     display:inline-block;
-    font-size:16px;
+    font-size:14px;
+    transition:all 0.3s;
   }
 </style>
