@@ -17,7 +17,7 @@
         </div>
       </div>
       <div class="index-middle" :style="'top:calc(36% + '+topHeight+'px);'">
-        <div class="clickable-title">
+        <div class="clickable-title" @click="openWallet">
           <mu-ripple>
             <span>账户与资金</span><b></b>
           </mu-ripple>
@@ -108,6 +108,9 @@
       },
       investIndexes(){
         this.$router.push('/Indexes');
+      },
+      openWallet(){
+        this._B.$emit('nav', 2);
       },
       setGreeting(){
         let d = new Date();

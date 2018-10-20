@@ -32,6 +32,20 @@
           this.navClick(0);
         }
 
+        this._B.$on('nav',(index)=>{
+          this.navClick(parseInt(index,10));
+        });
+
+        this._B.$on('highlightnav',(index)=>{
+          for(let i=0;i<this.nav.length;i++){
+            if(index!==i){
+              this.nav[i].sta = 'off';
+            } else {
+              this.nav[i].sta = 'on';
+            }
+          }
+        });
+
       })
     },
     methods:{

@@ -21,7 +21,7 @@ export default {
         '/LoginReg',
         '/MainHome','/MainHome/Home','/MainHome/Invest','/MainHome/Wallet','/MainHome/Share','/MainHome/Help',
         '/MyProfile',
-        '/GetBackPswd','/BindMobile','/BankCard','/Indexes','/Hall',
+        '/GetBackPswd','/BindMobile','/BankCard','/Indexes','/Hall','/Payment','/Bills',
         '/Intro','/About','/TermsOfUse',
       ];
       const toDepth = routeDeep.indexOf(to.path)

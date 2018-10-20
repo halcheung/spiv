@@ -25,6 +25,9 @@
         }catch(Error){
           //
         }
+        setTimeout(()=>{
+          this._B.$emit('highlightnav', 4);
+        }, 50)
 
         if(localStorage.getItem('ishb')){
           this.checkPlusReady();

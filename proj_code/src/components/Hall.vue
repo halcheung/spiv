@@ -38,36 +38,36 @@
       <p>选择购买金额</p>
       <mu-row gutter>
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==0?'#e60':'#fff'" :text-color="selectedMoney==0?'#fff':'#e60'" @click="select(100,0);">$100</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==0?'#e60':'#fff'" :text-color="selectedMoneyIndex==0?'#fff':'#e60'" @click="select(100,0);">$100</mu-button>
         </mu-col>
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==1?'#e60':'#fff'" :text-color="selectedMoney==1?'#fff':'#e60'" @click="select(200,1);">$200</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==1?'#e60':'#fff'" :text-color="selectedMoneyIndex==1?'#fff':'#e60'" @click="select(200,1);">$200</mu-button>
         </mu-col>
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==2?'#e60':'#fff'" :text-color="selectedMoney==2?'#fff':'#e60'" @click="select(500,2);">$500</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==2?'#e60':'#fff'" :text-color="selectedMoneyIndex==2?'#fff':'#e60'" @click="select(500,2);">$500</mu-button>
         </mu-col>
       </mu-row>
       <mu-row gutter style="margin-top:20px;">
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==3?'#e60':'#fff'" :text-color="selectedMoney==3?'#fff':'#e60'" @click="select(1000,3);">$1,000</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==3?'#e60':'#fff'" :text-color="selectedMoneyIndex==3?'#fff':'#e60'" @click="select(1000,3);">$1,000</mu-button>
         </mu-col>
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==4?'#e60':'#fff'" :text-color="selectedMoney==4?'#fff':'#e60'" @click="select(2000,4);">$2,000</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==4?'#e60':'#fff'" :text-color="selectedMoneyIndex==4?'#fff':'#e60'" @click="select(2000,4);">$2,000</mu-button>
         </mu-col>
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==5?'#e60':'#fff'" :text-color="selectedMoney==5?'#fff':'#e60'" @click="select(5000,5);">$5,000</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==5?'#e60':'#fff'" :text-color="selectedMoneyIndex==5?'#fff':'#e60'" @click="select(5000,5);">$5,000</mu-button>
         </mu-col>
       </mu-row>
       <mu-row gutter style="margin-top:20px;">
         <mu-col span="4">
-          <mu-button class="submit-btn" round full-width :color="selectedMoney==6?'#e60':'#fff'" :text-color="selectedMoney==6?'#fff':'#e60'" @click="select(0,6);">{{customizePriceCap}}</mu-button>
+          <mu-button class="submit-btn" round full-width :color="selectedMoneyIndex==6?'#e60':'#fff'" :text-color="selectedMoneyIndex==6?'#fff':'#e60'" @click="select(0,6);">{{customizePriceCap}}</mu-button>
         </mu-col>
-        <mu-col span="8" v-show="selectedMoney===6">
+        <mu-col span="8" v-show="selectedMoneyIndex===6">
           <mu-slider :step="500" v-model="customizePrice" max="10000"></mu-slider>
         </mu-col>
       </mu-row>
       <p style="padding-top:20px;">
-        <mu-button class="submit-btn" large round full-width color="#ee6600"><mu-icon left value="attach_money"></mu-icon>支付</mu-button>
+        <mu-button class="submit-btn" large round full-width color="#ee6600" @click="doBuy"><mu-icon left value="attach_money"></mu-icon>购买</mu-button>
       </p>
     </div>
   </div>
@@ -97,7 +97,8 @@
         iBuyCount: 0,
         customizePriceCap: '自定义',
         customizePrice: 0,
-        selectedMoney: 0,
+        selectedMoney: 100,
+        selectedMoneyIndex: 0,
         showBuy: false,
         buyBgOpacity: 0,
         buyTranslateY: 100,
@@ -154,7 +155,7 @@
         }
       },
       select(money,index){
-        this.selectedMoney = index;
+        this.selectedMoneyIndex = index;
         if(index===6){
           this.customizePriceCap = '$500';
         } else {
@@ -163,6 +164,13 @@
             this.customizePriceCap = '自定义';
           },50);
         }
+        setTimeout(()=>{
+          if(index===6) {
+            this.selectedMoney = this.customizePrice;
+          } else {
+            this.selectedMoney = money;
+          }
+        },50);
       },
       buy(){
         console.log(this.isBuyOpen);
@@ -180,6 +188,20 @@
         setTimeout(()=>{
           this.showBuy = false;
         }, 500);
+      },
+      doBuy(){
+        if(this.selectedMoneyIndex===6){
+          this.selectedMoney = this.customizePrice;
+        }
+        localStorage.setItem('payment', JSON.stringify({
+          mny:this.selectedMoney,
+          prod:this.hall.code,
+          name:this.hall.hall,
+          cycle:this.hall.cycle,
+          rate:this.hall.rate
+        }));
+        localStorage.removeItem('backbtnmm');
+        this.$router.push('/Payment');
       }
     },
     watch:{

@@ -17,6 +17,7 @@ import BindMobile from '@/components/BindMobile'
 import BankCard from '@/components/BankCard'
 import Indexes from '@/components/Indexes'
 import Hall from '@/components/Hall'
+import Payment from '@/components/Payment'
 
 Vue.use(Router)
 
@@ -108,6 +109,11 @@ export default new Router({
       path: '/Hall',
       name: 'Hall',
       component: Hall
+    },
+    {
+      path: '/Payment',
+      name: 'Payment',
+      component: Payment
     },
   ]
 })

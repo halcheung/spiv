@@ -73,11 +73,19 @@
         }catch(Error){
           //
         }
+        setTimeout(()=>{
+          this._B.$emit('highlightnav', 1);
+        }, 50)
 
         if(localStorage.getItem('ishb')){
           this.checkPlusReady();
         } else {
           document.querySelector("meta[name='theme-color']").setAttribute("content", "#0076bc");
+        }
+
+        if(localStorage.getItem('paid')){
+          localStorage.removeItem('paid');
+          this._B.$emit('nav', 2); // jump to wallet
         }
       })
     },
