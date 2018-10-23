@@ -158,10 +158,6 @@
     padding-top:20px;
     font-size:18px;
   }
-  .tabs {
-    background-color:#eee;
-    position: relative;
-  }
   .forget, .terms-of-use {
     display: block;
     float: right;

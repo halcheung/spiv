@@ -7,7 +7,7 @@
             <mu-icon value="account_circle"></mu-icon>
           </mu-button>
         </div>
-        <div class="brief" :style="'top:'+(59+topHeight)+'px;height:calc(36% - 59px);'">
+        <div class="brief" :style="'top:'+(59+topHeight)+'px;height:calc(36% - 59px);'" @click="myProfile">
           <mu-ripple>
             <span class="last-login">上次登录 {{lastLogin}}</span>
             <img class="avatar" src="../assets/avatar.png"/>
@@ -25,12 +25,12 @@
       </div>
       <div class="index-middle" :style="'top:calc(36% + '+(topHeight+52)+'px);height:170px;overflow-x:scroll;overflow-y:hidden;'">
         <div class="card-cont">
-          <div class="card">
+          <div class="card" @click="trades">
             <span>Static Investment &amp; Income</span>
             <strong>静态投资与收益</strong>
             <em>$<b>{{totalInvest}}</b>.00</em>
           </div>
-          <div class="card">
+          <div class="card" @click="dynamic">
             <span>Dynamic Income</span>
             <strong>动态收益</strong>
             <em>$<b>{{totalDynamic}}</b>.00</em>
@@ -130,6 +130,12 @@
         } else {
           this.greeting = '凌晨好';
         }
+      },
+      trades(){
+        this.$router.push('/Trades');
+      },
+      dynamic(){
+        this.$router.push('/MainHome/Share');
       },
     }
   }

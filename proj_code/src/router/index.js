@@ -18,6 +18,10 @@ import BankCard from '@/components/BankCard'
 import Indexes from '@/components/Indexes'
 import Hall from '@/components/Hall'
 import Payment from '@/components/Payment'
+import Bills from '@/components/Bills'
+import Trades from '@/components/Trades'
+import Withdraw from '@/components/Withdraw'
+import Coupons from '@/components/Coupons'
 
 Vue.use(Router)
 
@@ -114,6 +118,26 @@ export default new Router({
       path: '/Payment',
       name: 'Payment',
       component: Payment
+    },
+    {
+      path: '/Bills',
+      name: 'Bills',
+      component: Bills
+    },
+    {
+      path: '/Trades',
+      name: 'Trades',
+      component: Trades
+    },
+    {
+      path: '/Withdraw',
+      name: 'Withdraw',
+      component: Withdraw
+    },
+    {
+      path: '/Coupons',
+      name: 'Coupons',
+      component: Coupons
     },
   ]
 })

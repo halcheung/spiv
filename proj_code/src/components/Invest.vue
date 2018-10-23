@@ -84,7 +84,6 @@
         }
 
         if(localStorage.getItem('paid')){
-          localStorage.removeItem('paid');
           this._B.$emit('nav', 2); // jump to wallet
         }
       })

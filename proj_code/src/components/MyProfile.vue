@@ -29,9 +29,9 @@
         <mu-icon class="list-item-arrow" value="edit" size="18" color="#555"></mu-icon>
         <span class="list-item-val">未绑定</span>
       </div>
-      <div class="list-row" @click="icoClick('speedy');">
-        <mu-icon class="list-item-ico" value="timer" color="#696969"></mu-icon>
-        <span class="list-item-cap">提现加速卡</span>
+      <div class="list-row" @click="icoClick('coupons');">
+        <mu-icon class="list-item-ico" value="receipt" color="#696969"></mu-icon>
+        <span class="list-item-cap">卡券</span>
         <mu-icon class="list-item-arrow" value="chevron_right" size="18" color="#555"></mu-icon>
         <span class="list-item-val">0</span>
       </div>
@@ -52,6 +52,7 @@
 </template>
 
 <script>
+  import MuseUIMessage from 'muse-ui-message'
   export default {
     name: "MyProfile",
     data () {
@@ -77,6 +78,10 @@
         } else {
           document.querySelector("meta[name='theme-color']").setAttribute("content", "#f7f7f7");
         }
+
+        this._B.$on('closeDialog',()=>{
+          MuseUIMessage.close();
+        });
       })
     },
     methods:{
@@ -97,9 +102,11 @@
             history.go(-1);
             break;
           case 'exit':
+            localStorage.setItem('backbtnmm', 'closeDialog');
             this.$confirm('确定要退出应用？', '请确认', {
               type: ''
             }).then(({ result }) => {
+              localStorage.removeItem('backbtnmm');
               if (result) {
                 location.replace('#/');
               } else {
@@ -119,6 +126,9 @@
             break;
           case 'bankcard':
             this.$router.push('/BankCard');
+            break;
+          case 'coupons':
+            this.$router.push('/Coupons');
             break;
         }
       },

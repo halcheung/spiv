@@ -14,32 +14,34 @@
           <strong :style="'color:'+(totalAssets?'#0076bc':'#aaa')+';'">$<b>{{totalAssets.toLocaleString('en-US')}}</b>.00</strong>
         </div>
         <div class="card-holder" :style="'height:'+cardHolderHeight+'px;'">
-          <div class="card-big"
+          <div :class="'card-big'+(totalInvestIncome?'':' grey-card')"
                :style="'width:'+cardSize.w+'px;height:'+cardSize.h+'px;margin:-'+(cardSize.h/2)+'px 0 0 -'+(cardSize.w/2)+'px;transform:perspective(800px) rotateX('+card1.X+'deg) rotateY('+card1.Y+'deg);'">
             <span>Static Investment &amp; Income</span>
             <strong>静态投资与收益</strong>
             <em>$<b>{{totalInvestIncome.toLocaleString('en-US')}}</b>.00</em>
-            <i>可提现额<b>$0.00</b></i>
-            <div class="card-toucher">
+            <i>可提现额<b>${{moneyForWithdraw.toLocaleString('en-US')}}.00</b></i>
+            <div class="card-toucher" :style="'opacity:'+cardOpacity1+';'">
               <div @click="touchCard(1,0);"></div><div @click="touchCard(1,1);"></div>
-              <div @click="touchCard(1,2);">{{'X='+card1.X+',Y='+card1.Y}}</div>
+              <div @click="touchCard(1,2);"></div>
               <div @click="touchCard(1,3);"></div>
             </div>
           </div>
+          <div class="btn-float btn-invest" :style="'box-shadow:0 5px 5px '+(totalInvestIncome?'#005d94':'#555')+';'" @click="invest">投资</div>
         </div>
         <div class="card-holder" :style="'height:'+cardHolderHeight+'px;'">
-          <div class="card-big card-big-dyn"
+          <div :class="'card-big card-big-dyn'+(lastDynamicIncome?'':' grey-card2')"
                :style="'width:'+cardSize.w+'px;height:'+cardSize.h+'px;margin:-'+(cardSize.h/2)+'px 0 0 -'+(cardSize.w/2)+'px;transform:perspective(800px) rotateX('+card2.X+'deg) rotateY('+card2.Y+'deg);'">
             <span>Dynamic Income</span>
             <strong>动态收益</strong>
-            <em>$<b>{{totalDynamicIncome}}</b>.00</em>
-            <i>上一日动态收益<b>$0.00</b></i>
-            <div class="card-toucher">
+            <em>$<b>{{totalDynamicIncome.toLocaleString('en-US')}}</b>.00</em>
+            <i>上一日动态收益<b>${{lastDynamicIncome.toLocaleString('en-US')}}.00</b></i>
+            <div class="card-toucher" :style="'opacity:'+cardOpacity2+';'">
               <div @click="touchCard(2,0);"></div><div @click="touchCard(2,1);"></div>
               <div @click="touchCard(2,2);"></div>
               <div @click="touchCard(2,3);"></div>
             </div>
           </div>
+          <div class="btn-float btn-share" :style="'box-shadow:0 5px 5px '+(lastDynamicIncome?'#002344':'#444')+';'" @click="shareAndWithdraw">{{totalDynamicIncome?'提现':'推广'}}</div>
         </div>
       </div>
     </section>
@@ -59,6 +61,11 @@
         totalDynamicIncome: 0,
         card1: {X:0,Y:0},
         card2: {X:0,Y:0},
+        cardDeg: 5,
+        moneyForWithdraw: 0,
+        lastDynamicIncome: 0,
+        cardOpacity1: 0.05,
+        cardOpacity2: 0.05,
       }
     },
     mounted(){
@@ -91,6 +98,11 @@
           this.cardSize.h = 0.648 * this.cardSize.w;
         }
 
+        if(localStorage.getItem('paid')){
+          localStorage.removeItem('paid');
+          this.$router.push('/Trades');
+        }
+
       })
     },
     methods:{
@@ -114,24 +126,48 @@
       touchCard(cardIndex, areaIndex){
         switch(areaIndex){
           case 0:
-            this['card'+cardIndex] = {X:10,Y:-10};
+            this['card'+cardIndex] = {X:this.cardDeg,Y:-this.cardDeg};
+            this['cardOpacity'+cardIndex] = 0.1;
             break;
           case 1:
-            this['card'+cardIndex] = {X:10,Y:10};
+            this['card'+cardIndex] = {X:this.cardDeg,Y:this.cardDeg};
+            this['cardOpacity'+cardIndex] = 0.1;
             break;
           case 2:
-            this['card'+cardIndex] = {X:-10,Y:-10};
+            this['card'+cardIndex] = {X:-this.cardDeg,Y:-this.cardDeg};
+            this['cardOpacity'+cardIndex] = 0;
             break;
           case 3:
-            this['card'+cardIndex] = {X:-10,Y:10};
+            this['card'+cardIndex] = {X:-this.cardDeg,Y:this.cardDeg};
+            this['cardOpacity'+cardIndex] = 0;
             break;
         }
         setTimeout(()=>{
           this['card'+cardIndex] = {X:0,Y:0};
-        }, 600)
-      },
-      touchEnd(cardIndex){
+          this['cardOpacity'+cardIndex] = 0.05;
 
+          if(cardIndex === 1){
+            this.$router.push('/Trades');
+          } else {
+            this._B.$emit('nav', 3);
+          }
+
+        }, 400)
+
+      },
+      shareAndWithdraw(){
+        if(this.totalDynamicIncome){
+          this.withdraw();
+        } else {
+          this._B.$emit('nav', 3);
+        }
+      },
+      invest(){
+        this._B.$emit('nav', 1);
+      },
+      withdraw(){
+        localStorage.setItem('withdraw', 'dynamic');
+        this.$router.push('/Withdraw');
       }
     }
   }
@@ -204,7 +240,7 @@
     box-shadow:0 5px 5px 0 #ccc;
     overflow: hidden;
     color:#fff;
-    transition:all 0.5s;
+    transition:all 0.3s;
   }
   .card-big-dyn {
     background-color:#003567;
@@ -256,11 +292,49 @@
     left:0;
     width:100%;
     height:100%;
+    background-color:#fff;
+    transition:all 0.3s;
   }
   .card-toucher>div {
     width:50%;
     height:50%;
     float: left;
-    box-shadow:0 0 10px 0 #ff0 inset;
+  }
+  .grey-card {
+    filter:grayscale(100%) brightness(150%);
+  }
+  .grey-card2 {
+    filter:grayscale(100%) brightness(250%);
+  }
+  .btn-float {
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:70px;
+    height:70px;
+    margin:2% 0 0 -39%;
+    background-color:#555;
+    border-radius:200px;
+    color:#fff;
+    font-size:18px;
+    font-weight:bold;
+    text-align:center;
+    line-height:75px;
+    transition:all 0.3s;
+  }
+  .btn-float:active {
+    transform:scale(0.95);
+  }
+  .btn-invest {
+    background-color:#3ea786;
+  }
+  .btn-invest:active {
+    background-color:#2f896d;
+  }
+  .btn-share {
+    background-color:#e56600;
+  }
+  .btn-share:active {
+    background-color:#cf5c00;
   }
 </style>

@@ -71,12 +71,6 @@
     },
     mounted(){
       this.$nextTick(()=>{
-        if(localStorage.getItem('mobile')){
-          this.showMobile = false
-          this.mobile = localStorage.getItem('mobile').toString();
-          localStorage.removeItem('mobile');
-        }
-
         this.prod = JSON.parse(localStorage.getItem('payment'));
 
         if(localStorage.getItem('ishb')){

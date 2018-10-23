@@ -15,6 +15,8 @@ exports.install = function (Vue, options) {
     ];
 
   Vue.prototype.isMobile = (navigator.userAgent.match(/(Android|webOS|iPhone|iPad|iPod|BlackBerry|Windows Phone)/i));
+  Vue.prototype.isIOS = (navigator.userAgent.match(/(iPhone|iPad|iPod)/i));
+  Vue.prototype.isAndroid = (navigator.userAgent.match(/(Android)/i));
   Vue.prototype.apiUrl = 'http://www.18ydl.com/ag/';
   Vue.prototype.USERINFO = JSON.parse(localStorage.getItem("uinf") ? localStorage.getItem("uinf").toString() : "{}");
 

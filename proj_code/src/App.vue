@@ -21,7 +21,7 @@ export default {
         '/LoginReg',
         '/MainHome','/MainHome/Home','/MainHome/Invest','/MainHome/Wallet','/MainHome/Share','/MainHome/Help',
         '/MyProfile',
-        '/GetBackPswd','/BindMobile','/BankCard','/Indexes','/Hall','/Payment','/Bills',
+        '/GetBackPswd','/BindMobile','/BankCard','/Indexes','/Hall','/Payment','/Bills','/Trades','/Withdraw','/Coupons',
         '/Intro','/About','/TermsOfUse',
       ];
       const toDepth = routeDeep.indexOf(to.path)
@@ -51,7 +51,7 @@ export default {
 input, textarea {
   -webkit-user-select: text;
 }
-  .back {
+  .index-top>.back,.top-bar>.back {
     position:absolute;
     top:5px;
     left:5px;
@@ -79,6 +79,10 @@ input, textarea {
   .main>div {
     padding:30px;
   }
+  .tabs {
+    background-color:#eee;
+    position: relative;
+  }
 
   .form {
     padding:30px;
@@ -91,6 +95,9 @@ input, textarea {
     color:#666;
     padding:9px 20px 7px 55px;
     width:100%;
+  }
+  .ipt-qry {
+    padding:9px 20px 7px 40px;
   }
   input:focus {
     outline: none;
@@ -106,6 +113,9 @@ input, textarea {
     margin:-12px 0 0 0;
     left:15px;
   }
+  .ico-qry {
+    left:20px;
+  }
   .submit-btn {
     font-size:16px;
   }
@@ -115,7 +125,7 @@ input, textarea {
     font-size:16px;
     height:42px;
   }
-  .view-pswd {
+  .form>.input>.view-pswd,.main .input>.view-pswd {
     position: absolute;
     top:-2px;
     right:2px;
@@ -175,6 +185,11 @@ input, textarea {
   .mine {
     float:right;
     margin:2px 2px 0 0;
+  }
+  .right-icon {
+    position:absolute;
+    bottom:0;
+    right:0;
   }
   .navi-cont {
     position: fixed;
@@ -256,13 +271,18 @@ input, textarea {
     line-height:65px;
     overflow: hidden;
   }
-  .main>.list-row {
+  .main>.list-row, article {
     border-bottom:solid 1px #ddd;
     padding:10px 5px 10px 15px;
     transition:all 0.5s;
     margin:0 10px;
   }
-  .main>.list-row:active {
+  article {
+    transition:all 0.5s;
+    position: relative;
+    margin:0;
+  }
+  .main>.list-row:active, article:active {
     background-color:#e5e5e5;
   }
   .main>.list-row>.list-item-ico {
